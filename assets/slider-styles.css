@@ -1,0 +1,47 @@
+.swiper {
+  width: 1200px;
+  height: 500px;
+}
+
+.swiper-slide {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slide-content {
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 20px;
+  border-radius: 10px;
+  color: #fff;
+  text-align: center;
+  max-width: 80%;
+}
+
+.slide-content h2 {
+  margin: 0 0 10px;
+  font-size: 24px;
+}
+
+.slide-content p {
+  margin: 0 0 15px;
+  font-size: 16px;
+}
+
+.slide-content button {
+  background-color: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: #fff;
+}
