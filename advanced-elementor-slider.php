@@ -45,5 +45,5 @@ function enqueue_slider_scripts(){
 }
 
 function enqueue_slider_styles(){
-    wp_enqueue_style('aes-slider-style');
+    // wp_enqueue_style('aes-slider-style');
 }
