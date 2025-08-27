@@ -12,7 +12,31 @@
   justify-content: center;
 }
 
-.slide-content {
+.aes-slide-inner {
+  background-position: 50%;
+  background-repeat: no-repeat;
+  margin: auto;
+  padding: 50px;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.aes-slide-bg {
+  background-position: 50%;
+  background-repeat: no-repeat;
+  min-height: 100%;
+  min-width: 100%;
+}
+
+.aes-slide-bg-overlay {
+  inset: 0;
+  position: absolute;
+}
+
+.aes-slide-contents {
   background-color: rgba(0, 0, 0, 0.6);
   padding: 20px;
   border-radius: 10px;
