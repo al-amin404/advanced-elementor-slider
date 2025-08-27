@@ -65,112 +65,328 @@ class Slider extends Widget_Base
 
 	protected function register_controls()
 	{
+		//content section start
 		$this->start_controls_section(
 			'content_section',
 			[
 				'label' => esc_html__('Content', 'aes_slider'),
-				'tab'   => \Elementor\Controls_Manager::TAB_CONTENT
+				'tab'   => Controls_Manager::TAB_CONTENT
 			]
 		);
 
-		$repeater = new \Elementor\Repeater();
+		//slides repeater start
+		$repeater = new Repeater();
+
+		$repeater->start_controls_tabs('aes_slides_repeater');
+
+		//start Tab - Background
+		$repeater->start_controls_tab('background_tab', ['label' => esc_html__('Background', 'aes_slider')]);
+
+		/* TO-DO
+		*
+		* Slide Background Type - CHOOSE control
+		* types - Classic(color/image), Gradient, Video
+		*
+		*/
+
 
 		$repeater->add_control(
-			'slide_image',
+			'aes_slide_bg_color',
 			[
-				'label'   => esc_html__('Image', 'aes_slider'),
-				'type'    => \Elementor\Controls_Manager::MEDIA,
-				'default' => [
-					'url' => \Elementor\Utils::get_placeholder_image_src()
-				]
-			]
-		);
-
-		$repeater->add_control(
-			'slide_title',
-			[
-				'label'   => esc_html__('Title', 'aes_slider'),
-				'type'    => \Elementor\Controls_Manager::TEXT,
-				'default' => esc_html__('John Doe', 'aes_slider'),
-				'dynamic' => [
-					'active' => true
-				]
-			]
-		);
-
-		$repeater->add_control(
-			'slide_desc',
-			[
-				'label'   => esc_html__('Description', 'aes_slider'),
-				'type'    => \Elementor\Controls_Manager::TEXT,
-				'default' => esc_html__('CEO, Acme Inc.', 'aes_slider'),
-				'dynamic' => [
-					'active' => true
-				]
-			]
-		);
-
-		$repeater->add_control(
-			'slide_button_txt',
-			[
-				'label'       => esc_html__('Button Text', 'aes_slider'),
-				'type'        => \Elementor\Controls_Manager::TEXT,
-				'rows'        => 10,
-				'default'     => esc_html__('Learn More', 'aes_slider'),
-				'placeholder' => esc_html__('Type your button title here', 'aes_slider'),
-				'dynamic'     => [
-					'active' => true
-				]
-			]
-		);
-
-		$repeater->add_control(
-			'slide_button_url',
-			[
-				'label'       => esc_html__('Link', 'aes_slider'),
-				'type'        => \Elementor\Controls_Manager::URL,
-				'options'     => ['url', 'is_external', 'nofollow'],
-				'default'     => [
-					'url'         => '',
-					'is_external' => true,
-					'nofollow'    => true
+				'label' => esc_html__('Background Color', 'aes_slider'),
+				'type' => Controls_Manager::COLOR,
+				'default' => '#888888',
+				'selectors' => [
+					'{{WRAPPER}} {{CURRENT_ITEM}} .aes-slide-bg' => 'background-color: {{VALUE}}',
 				],
-				'label_block' => true,
-				'condition' => [
-					'slide_button_txt!' => ''
-				]
 			]
 		);
 
-		$this->add_control(
-			'slider',
+		$repeater->add_control(
+			'aes_slide_bg_image',
 			[
-				'label'       => esc_html__('Slider', 'aes_slider'),
-				'type'        => \Elementor\Controls_Manager::REPEATER,
+				'label' => _x('Image', 'Background Control', 'aes_slider'),
+				'type' => Controls_Manager::MEDIA,
+				'selectors' => [
+					'{{WRAPPER}} {{CURRENT_ITEM}} .aes-slide-bg' => 'background-image: url({{URL}})',
+				],
+				'dynamic' => [
+					'active' => true,
+				],
+			]
+		);
+
+		$repeater->add_control(
+			'slide_bg_size',
+			[
+				'label' => _x('Background size', 'Background Control', 'aes_slider'),
+				'type' => Controls_Manager::SELECT,
+				'default' => 'cover',
+				'options' => [
+					'cover' => _x('Cover', 'Background Control', 'aes_slider'),
+					'contain' => _x('Contain', 'Background Control', 'aes_slider'),
+					'auto' => _x('Auto', 'Background Control', 'aes_slider')
+				],
+				'selectors' => [
+					'{{WRAPPER}} {{CURRENT_ITEM}} .aes-slide-bg' => 'background-size: {{VALUE}}'
+				],
+				'conditions' => [
+					'terms' => [
+						[
+							'name' => 'aes_slide_bg_image[url]',
+							'operator' => '!=',
+							'value' => '',
+						],
+					],
+				],
+			]
+		);
+
+		//background_overlay - switcher control
+		$repeater->add_control(
+			'slide_bg_overlay',
+			[
+				'label' => _x( 'Background Overlay', 'Background Control', 'aes_slider' ),
+				'type' => Controls_Manager::SWITCHER,
+				'default' => '',
+				'conditions' => [
+					'terms' => [
+						[
+							'name' => 'aes_slide_bg_image[url]',
+							'operator' => '!=',
+							'value' => '',
+						],
+					],
+				],
+			]
+		);
+
+		//overlay color - color control
+		$repeater->add_control(
+			'slide_bg_overlay_color',
+			[
+				'label' => esc_html__('Color', 'aes_slider'),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} {{CURRENT_ITEM}} .aes-slide-bg-overlay' => 'background-color: {{VALUE}}',
+				],
+				'conditions' => [
+					'terms' => [
+						[
+							'name' => 'slide_bg_overlay',
+							'value' => 'yes',
+						],
+					],
+				],
+			]
+		);
+
+		//overlay blend mode - select control
+		$repeater->add_control(
+			'overlay_blend_mode',
+			[
+				'label' => esc_html__('Blend Mode', 'aes_slider'),
+				'type' => Controls_Manager::SELECT,
+				'options' => [
+					'' => esc_html__( 'Normal', 'aes_slider' ),
+					'multiply' => 'Multiply',
+					'screen' => 'Screen',
+					'overlay' => 'Overlay',
+					'darken' => 'Darken',
+					'lighten' => 'Lighten',
+					'color-dodge' => 'Color Dodge',
+					'color-burn' => 'Color Burn',
+					'hard-light' => 'Hard Light',
+					'soft-light' => 'Soft Light',
+					'difference' => 'Difference',
+					'plus-darker' => 'Plus Darker',
+					'plus-lighter' => 'Plus Lighter',
+					'hue' => 'Hue',
+					'saturation' => 'Saturation',
+					'color' => 'Color',
+					'exclusion' => 'Exclusion',
+					'luminosity' => 'Luminosity',
+				],
+				'selectors' => [
+					'{{WRAPPER}} {{CURRENT_ITEM}} .aes-slide-bg-overlay' => 'mix-blend-mode: {{VALUE}}',
+				],
+				'conditions' => [
+					'terms' => [
+						[
+							'name' => 'slide_bg_overlay',
+							'value' => 'yes',
+						],
+					],
+				],
+			]
+		);
+
+		$repeater->end_controls_tab();
+		//end Tab - Background
+
+
+		//start Tab - Content
+		$repeater->start_controls_tab('content_tab', ['label' => esc_html__('Content', 'aes_slider')]);
+
+		$repeater->add_control(
+			'aes_slide_title',
+			[
+				'label' => esc_html__('Title', 'aes_slider'),
+				'type' => Controls_Manager::TEXT,
+				'default' => esc_html__('Slide Title', 'aes_slider'),
+				'label_block' => true,
+				'dynamic' => ['active' => true,],
+			]
+		);
+
+		$repeater->add_control(
+			'aes_slide_description',
+			[
+				'label' => esc_html__('Description', 'aes_slider'),
+				'type' => Controls_Manager::TEXTAREA,
+				'default' => esc_html__('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.', 'aes_slider'),
+				'label_block' => true,
+				'dynamic' => [
+					'active' => true,
+				],
+			]
+		);
+
+		$repeater->add_control(
+			'aes_slide_button_txt',
+			[
+				'label' => esc_html__('Button Text', 'aes_slider'),
+				'type' => Controls_Manager::TEXT,
+				'default' => esc_html__('Click Here', 'aes_slider'),
+				'dynamic' => [
+					'active' => true,
+				],
+			]
+		);
+
+		$repeater->add_control(
+			'aes_slide_button_url',
+			[
+				'label' => esc_html__( 'Link', 'aes_slider' ),
+				'type' => Controls_Manager::URL,
+				'options' => [ 'url', 'is_external', 'nofollow', 'custom_attributes' ],
+				'default' => [
+					'url' => '',
+					'is_external' => false,
+					'nofollow' => false,
+					'custom_attributes' => '',
+				],
+				'dynamic' => [
+					'active' => true,
+				],
+				'conditions' => [
+					'terms' => [
+						[
+							'name' => 'aes_slide_button_txt',
+							'operator' => '!=',
+							'value' => '',
+						],
+					],
+				],
+			]
+		);
+
+		$repeater->end_controls_tab();
+		//end Tab - Content
+
+
+		//start Tab - Style
+		$repeater->start_controls_tab(
+			'style_tab',
+			[
+				'label' => esc_html__('Style', 'aes_slider'),
+			],
+		);
+
+		//custom slide styles - SWITCHER control
+
+		//inner content positon - TAB_CONTENT
+			//horizontal position - CHOOSE control
+			//vertical position - CHOOSE control
+			//text align - CHOOSE control
+
+		//slide title color - COLOR control
+		
+		//slide description color - COLOR control
+		
+		//text shadow - Group_Control_Text_Shadow
+
+		//slide content - TAB_CONTENT
+			//inner content bg color - COLOR control
+
+			//inner content padding - DIMENSIONS control
+
+			//inner content border type - SELECT control
+				//border width - DIMENSIONS control
+				//border color - COLOR control
+			
+			//inner content border radius - DIMENSIONS control
+
+			//backdrop blur - SLIDER control
+		
+
+		$repeater->end_controls_tab();
+		//end Tab - Style
+		
+
+		$repeater->end_controls_tabs();
+		//end repeater
+
+		
+		//Default slides
+		$this->add_control(
+			'aes_slides',
+			[
+				'label'       => esc_html__('Slides', 'aes_slider'),
+				'type'        => Controls_Manager::REPEATER,
+				'show_label' => true,
 				'fields'      => $repeater->get_controls(),
 				'default'     => [
 					[
-						'slide_title'      => esc_html__('Jane Doe', 'aes_slider'),
-						'slide_desc'       => esc_html__('CEO, Acme Inc.', 'aes_slider'),
-						'slide_button_txt' => esc_html__('Learn More', 'aes_slider')
+						'aes_slide_title'      => esc_html__('Jane Doe', 'aes_slider'),
+						'aes_slide_description'       => esc_html__('CEO, Acme Inc.', 'aes_slider'),
+						'aes_slide_button_txt' => esc_html__('Learn More', 'aes_slider'),
+						'aes_slide_bg_color' => '#888888'
 					],
 					[
-						'slide_title'      => esc_html__('John Smith', 'aes_slider'),
-						'slide_desc'       => esc_html__('Marketing Director', 'aes_slider'),
-						'slide_button_txt' => esc_html__('Learn More', 'aes_slider')
-					],
-					[
-						'slide_title'      => esc_html__('Lisa Ray', 'aes_slider'),
-						'slide_desc'       => esc_html__('Product Manager', 'aes_slider'),
-						'slide_button_txt' => esc_html__('Learn More', 'aes_slider')
+						'aes_slide_title'      => esc_html__('Jhon Doe', 'aes_slider'),
+						'aes_slide_description'       => esc_html__('CEO, Acme Inc.', 'aes_slider'),
+						'aes_slide_button_txt' => esc_html__('Learn More', 'aes_slider'),
+						'aes_slide_bg_color' => '#888888'
 					]
 				],
-				'title_field' => '{{{ slide_title }}}'
+				'title_field' => '{{{ aes_slide_title }}}'
 			]
 		);
 
-		$this->end_controls_section();
+		
 
+		//slider aspect ratio - switcher control
+		$this->add_control(
+			'slider_aspect_ratio',
+			[
+				'label' => esc_html__( 'Maintain Aspect Ratio', 'aes_slider' ),
+				'type' => Controls_Manager::SWITCHER,
+				'default' => '',
+			]
+		);
+
+		//ratio width - text input control
+		//ratio height - text input control
+		
+
+		
+
+		$this->end_controls_section();
+		//content section end
+
+
+		//slider settings section start
 		$this->start_controls_section(
 			'slider_settings_section',
 			[
@@ -206,202 +422,28 @@ class Slider extends Widget_Base
 		);
 
 		$this->end_controls_section();
+		//slider settings section end
 
-		$this->start_controls_section(
-			'style_content_section',
-			[
-				'label' => esc_html__('Content', 'aes_slider'),
-				'tab'   => \Elementor\Controls_Manager::TAB_STYLE
-			]
-		);
-
-		$this->add_responsive_control(
-			'item_width',
-			[
-				'label'      => esc_html__('Item Width', 'aes_slider'),
-				'type'       => \Elementor\Controls_Manager::SLIDER,
-				'size_units' => ['px', '%', 'em', 'rem', 'custom'],
-				'range'      => [
-					'px' => [
-						'min'  => 0,
-						'max'  => 1000,
-						'step' => 5
-					],
-					'%'  => [
-						'min' => 0,
-						'max' => 100
-					]
-				],
-				'default'    => [
-					'unit' => '%',
-					'size' => 32
-				],
-				'selectors'  => [
-					'{{WRAPPER}} .ea-testimonial-container .testimonial' => 'width: {{SIZE}}{{UNIT}};'
-				]
-			]
-		);
-
-		$this->add_responsive_control(
-			'item_gap',
-			[
-				'label'      => esc_html__('Item Gap', 'aes_slider'),
-				'type'       => \Elementor\Controls_Manager::SLIDER,
-				'size_units' => ['px', '%', 'em', 'rem', 'custom'],
-				'range'      => [
-					'px' => [
-						'min'  => 0,
-						'max'  => 1000,
-						'step' => 5
-					],
-					'%'  => [
-						'min' => 0,
-						'max' => 100
-					]
-				],
-				'default'    => [
-					'unit' => 'px',
-					'size' => 10
-				],
-				'selectors'  => [
-					'{{WRAPPER}} .ea-testimonial-container' => 'gap: {{SIZE}}{{UNIT}};'
-				]
-			]
-		);
-
-		$this->add_group_control(
-			\Elementor\Group_Control_Box_Shadow::get_type(),
-			[
-				'name'     => 'box_shadow',
-				'selector' => '{{WRAPPER}} .ea-testimonial-container .testimonial'
-			]
-		);
-
-		$this->add_control(
-			'client_name_heading',
-			[
-				'label'     => esc_html__('Client Name', 'aes_slider'),
-				'type'      => \Elementor\Controls_Manager::HEADING,
-				'separator' => 'after'
-			]
-		);
-
-		$this->add_control(
-			'client_name_margin',
-			[
-				'label'      => esc_html__('Margin', 'aes_slider'),
-				'type'       => \Elementor\Controls_Manager::DIMENSIONS,
-				'size_units' => ['px', '%', 'em', 'rem', 'custom'],
-				'default'    => [
-					'top'      => 2,
-					'right'    => 0,
-					'bottom'   => 2,
-					'left'     => 0,
-					'unit'     => 'px',
-					'isLinked' => false
-				],
-				'selectors'  => [
-					'{{WRAPPER}} .ea-testimonial-container .testimonial h3' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};'
-				]
-			]
-		);
-
-		$this->add_control(
-			'client_name_color',
-			[
-				'label'     => esc_html__('Color', 'aes_slider'),
-				'type'      => \Elementor\Controls_Manager::COLOR,
-				'selectors' => [
-					'{{WRAPPER}} .ea-testimonial-container .testimonial h3' => 'color: {{VALUE}}'
-				]
-			]
-		);
-
-		$this->add_group_control(
-			\Elementor\Group_Control_Typography::get_type(),
-			[
-				'name'     => 'client_name_typo',
-				'selector' => '{{WRAPPER}} .ea-testimonial-container .testimonial h3'
-			]
-		);
-
-		$this->add_control(
-			'client_designation_heading',
-			[
-				'label'     => esc_html__('Client Designation', 'aes_slider'),
-				'type'      => \Elementor\Controls_Manager::HEADING,
-				'separator' => 'after'
-			]
-		);
-
-		$this->add_control(
-			'client_designation_color',
-			[
-				'label'     => esc_html__('Color', 'aes_slider'),
-				'type'      => \Elementor\Controls_Manager::COLOR,
-				'selectors' => [
-					'{{WRAPPER}} .ea-testimonial-container .testimonial .role' => 'color: {{VALUE}}'
-				]
-			]
-		);
-
-		$this->add_group_control(
-			\Elementor\Group_Control_Typography::get_type(),
-			[
-				'name'     => 'client_designation_typo',
-				'selector' => '{{WRAPPER}} .ea-testimonial-container .testimonial .role'
-			]
-		);
-
-		$this->add_control(
-			'client_review_heading',
-			[
-				'label'     => esc_html__('Client Review', 'aes_slider'),
-				'type'      => \Elementor\Controls_Manager::HEADING,
-				'separator' => 'after'
-			]
-		);
-
-		$this->add_control(
-			'client_review_color',
-			[
-				'label'     => esc_html__('Review Color', 'aes_slider'),
-				'type'      => \Elementor\Controls_Manager::COLOR,
-				'selectors' => [
-					'{{WRAPPER}} .ea-testimonial-container .testimonial .message' => 'color: {{VALUE}}'
-				]
-			]
-		);
-
-		$this->add_group_control(
-			\Elementor\Group_Control_Typography::get_type(),
-			[
-				'name'     => 'client_review_typo',
-				'selector' => '{{WRAPPER}} .ea-testimonial-container .testimonial .message'
-			]
-		);
-
-		$this->end_controls_section();
 	}
 
 	protected function render()
 	{
 		$settings = $this->get_settings_for_display();
-		?>
-		<?php if ($settings['slider']): ?>
-			<div class="swiper ea-slider-container">
-				<div class="swiper-wrapper ea-slider-wrapper">
-					<?php foreach ($settings['slider'] as $slide): ?>
-						<?php
-						if (! empty($slide['slide_button_url']['url'])) {
-							$this->add_link_attributes('slide_link', $slide['slide_button_url']);
-						}
-						?>
-						<div class="swiper-slide" style="background-image: url('<?php echo esc_url($slide['slide_image']['url']); ?>')">
-							<div class="slide-content">
-								<h2><?php echo esc_html($slide['slide_title']); ?></h2>
-								<p><?php echo esc_html($slide['slide_desc']); ?></p>
-								<a href="<?php echo esc_html($slide['slide_button_url']['url']); ?>" <?php $this->print_render_attribute_string('slide_link'); ?>><?php echo esc_html($slide['slide_button_txt']); ?></a>
+?>
+		<?php if ($settings['aes_slides']): ?>
+			<div class="swiper aes-slider-container ea-slider-container">
+				<div class="swiper-wrapper aes-slides ea-slider-wrapper">
+					<?php foreach ($settings['aes_slides'] as $slide):
+					?>
+						<div class="elementor-repeater-item-<?= $slide['_id'] ?> swiper-slide">
+							<div class="aes-slide-bg" role="img"></div>
+							<div class="aes-slide-bg-overlay"></div>
+							<div class="aes-slide-inner">
+								<div class="aes-slide-contents">
+									<div class="aes-slide-title">Slide 1 Heading</div>
+									<div class="aes-slide-description">Lorem ipsum dolor sit amet consectetur adipiscing elit dolor</div>
+									<a href="http://www.google.com" class="elementor-button aes-slide-button">Click Here</a>
+								</div>
 							</div>
 						</div>
 					<?php endforeach; ?>
@@ -415,6 +457,6 @@ class Slider extends Widget_Base
 				<div class="swiper-button-prev"></div>
 			</div>
 		<?php endif; ?>
-		<?php
+<?php
 	}
 }
