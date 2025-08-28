@@ -1,15 +1,12 @@
 <?php
 
 use Elementor\Controls_Manager;
-use Elementor\Core\Kits\Documents\Tabs\Global_Typography;
 use Elementor\Group_Control_Background;
 use Elementor\Group_Control_Text_Shadow;
 use Elementor\Group_Control_Typography;
 use Elementor\Icons_Manager;
 use Elementor\Repeater;
-use Elementor\Utils;
 use Elementor\Widget_Base;
-use ElementorPro\Base\Base_Widget;
 
 if (! defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
@@ -304,11 +301,129 @@ class Slider extends Widget_Base
 		);
 
 		//custom slide styles - SWITCHER control
+		$repeater->add_control(
+			'slide_custom_style',
+			[
+				'label' => esc_html__('Custom Style', 'aes_slider'),
+				'type' => Controls_Manager::SWITCHER,
+				'default' => '',
+			]
+		);
 
 		//inner content positon - TAB_CONTENT
+		
 			//horizontal position - CHOOSE control
+			$repeater->add_control(
+				'slide_horizontal_position',
+				[
+					'label'=> esc_html__('Horizontal Position', 'aes_slider'),
+					'type'=> Controls_Manager::CHOOSE,
+					'options' => [
+						'left' => [
+							'title'=> esc_html__('Left','aes_slider'),
+							'icon'=> 'eicon-text-align-left',
+						],
+						'center' => [
+							'title' => esc_html__( 'Center', 'aes_slider' ),
+							'icon' => 'eicon-text-align-center',
+						],
+						'right' => [
+							'title' => esc_html__( 'Right', 'aes_slider' ),
+							'icon' => 'eicon-text-align-right',
+						],
+					],
+					'selectors' => [
+						'{{WRAPPER}} {{CURRENT_ITEM}} .aes-slide-contents' => '{{VALUE}}',
+					],
+					'selectors_dictionary' => [
+						'left' => 'margin-right: auto',
+						'center' => 'margin: 0 auto',
+						'right' => 'margin-left: auto',
+					],
+					'conditions' => [
+						'terms' => [
+							[
+								'name' => 'slide_custom_style',
+								'value' => 'yes',
+							],
+						],
+					],
+				]
+			);
+
 			//vertical position - CHOOSE control
+			$repeater->add_control(
+				'slide_vertical_position',
+				[
+					'label'=> esc_html__('Vertical Position', 'aes_slider'),
+					'type'=> Controls_Manager::CHOOSE,
+					'options' => [
+						'left' => [
+							'title'=> esc_html__('Left','aes_slider'),
+							'icon'=> 'eicon-text-align-left',
+						],
+						'center' => [
+							'title' => esc_html__( 'Center', 'aes_slider' ),
+							'icon' => 'eicon-text-align-center',
+						],
+						'right' => [
+							'title' => esc_html__( 'Right', 'aes_slider' ),
+							'icon' => 'eicon-text-align-right',
+						],
+					],
+					'selectors' => [
+						'{{WRAPPER}} {{CURRENT_ITEM}} .aes-slide-inner' => 'align-items: {{VALUE}}',
+					],
+					'selectors_dictionary' => [
+						'top' => 'flex-start',
+						'middle' => 'center',
+						'bottom' => 'flex-end',
+					],
+					'conditions' => [
+						'terms' => [
+							[
+								'name' => 'slide_custom_style',
+								'value' => 'yes',
+							],
+						],
+					],
+				]
+			);
+
 			//text align - CHOOSE control
+			$repeater->add_control(
+			'slide_text_align',
+			[
+					'label' => esc_html__( 'Align Text', 'aes_slider' ),
+					'type' => Controls_Manager::CHOOSE,
+					'options' => [
+						'left' => [
+							'title' => esc_html__( 'Left', 'aes_slider' ),
+							'icon' => 'eicon-text-align-left',
+						],
+						'center' => [
+							'title' => esc_html__( 'Center', 'aes_slider' ),
+							'icon' => 'eicon-text-align-center',
+						],
+						'right' => [
+							'title' => esc_html__( 'Right', 'aes_slider' ),
+							'icon' => 'eicon-text-align-right',
+						],
+					],
+					'selectors' => [
+						'{{WRAPPER}} {{CURRENT_ITEM}} .aes-slide-contents' => 'text-align: {{VALUE}};',
+					],
+					'conditions' => [
+						'terms' => [
+							[
+								'name' => 'slide_custom_style',
+								'value' => 'yes',
+							],
+						],
+					],
+				]
+			);
+		
 
 		//slide title color - COLOR control
 		
@@ -391,7 +506,7 @@ class Slider extends Widget_Base
 			'slider_settings_section',
 			[
 				'label' => esc_html__('Slider Settings', 'aes_slider'),
-				'tab'   => \Elementor\Controls_Manager::TAB_CONTENT
+				'tab'   => Controls_Manager::TAB_CONTENT
 			]
 		);
 
@@ -399,7 +514,7 @@ class Slider extends Widget_Base
 			'slide_per_view',
 			[
 				'label' => esc_html__('Slide Per View', 'textdomain'),
-				'type' => \Elementor\Controls_Manager::NUMBER,
+				'type' => Controls_Manager::NUMBER,
 				'min' => 1,
 				'max' => 5,
 				'step' => 1,
@@ -412,7 +527,7 @@ class Slider extends Widget_Base
 			'autoplay',
 			[
 				'label' => esc_html__('Auto Play', 'textdomain'),
-				'type' => \Elementor\Controls_Manager::SWITCHER,
+				'type' => Controls_Manager::SWITCHER,
 				'label_on' => esc_html__('Yes', 'textdomain'),
 				'label_off' => esc_html__('No', 'textdomain'),
 				'return_value' => 'yes',
