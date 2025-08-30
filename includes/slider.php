@@ -1,12 +1,14 @@
 <?php
 
-use Elementor\Controls_Manager;
-use Elementor\Group_Control_Background;
-use Elementor\Group_Control_Text_Shadow;
-use Elementor\Group_Control_Typography;
-use Elementor\Icons_Manager;
+use Elementor\Utils;
 use Elementor\Repeater;
 use Elementor\Widget_Base;
+use Elementor\Icons_Manager;
+use Elementor\Controls_Manager;
+use Elementor\Group_Control_Background;
+use Elementor\Group_Control_Typography;
+use Elementor\Group_Control_Text_Shadow;
+
 
 if (! defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
@@ -146,14 +148,8 @@ class Slider extends Widget_Base
 				'label' => _x( 'Background Overlay', 'Background Control', 'aes_slider' ),
 				'type' => Controls_Manager::SWITCHER,
 				'default' => '',
-				'conditions' => [
-					'terms' => [
-						[
-							'name' => 'aes_slide_bg_image[url]',
-							'operator' => '!=',
-							'value' => '',
-						],
-					],
+				'condition' => [
+					'aes_slide_bg_image[url]!' => '',
 				],
 			]
 		);
@@ -466,13 +462,13 @@ class Slider extends Widget_Base
 						'aes_slide_title'      => esc_html__('Jane Doe', 'aes_slider'),
 						'aes_slide_description'       => esc_html__('CEO, Acme Inc.', 'aes_slider'),
 						'aes_slide_button_txt' => esc_html__('Learn More', 'aes_slider'),
-						'aes_slide_bg_color' => '#888888'
+						'aes_slide_bg_color' => '#888888',
 					],
 					[
 						'aes_slide_title'      => esc_html__('Jhon Doe', 'aes_slider'),
 						'aes_slide_description'       => esc_html__('CEO, Acme Inc.', 'aes_slider'),
 						'aes_slide_button_txt' => esc_html__('Learn More', 'aes_slider'),
-						'aes_slide_bg_color' => '#888888'
+						'aes_slide_bg_color' => '#888888',
 					]
 				],
 				'title_field' => '{{{ aes_slide_title }}}'
