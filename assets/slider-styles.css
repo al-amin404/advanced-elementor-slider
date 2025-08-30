@@ -39,24 +39,24 @@
   max-width: 80%;
 }
 
-.slide-content h2 {
-  margin: 0 0 10px;
-  font-size: 24px;
+.aes-slide-title {
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 
-.slide-content p {
-  margin: 0 0 15px;
-  font-size: 16px;
+.aes-slide-description {
+  font-size: 1rem;
+  margin-bottom: 0.8rem;  
 }
 
-.slide-content button {
-  background-color: #ff6b6b;
+.aes-slide-button {
   color: white;
-  border: none;
-  padding: 10px 20px;
+  border: 1px solid white;
+  padding: 12px 15px;
   font-size: 14px;
   border-radius: 5px;
   cursor: pointer;
+  display: inline-block;
 }
 
 .swiper-button-next,
