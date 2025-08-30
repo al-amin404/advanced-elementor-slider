@@ -3,14 +3,11 @@
 use Elementor\Utils;
 use Elementor\Repeater;
 use Elementor\Widget_Base;
-use Elementor\Icons_Manager;
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Background;
 use Elementor\Group_Control_Text_Shadow;
 use Elementor\Group_Control_Typography;
 use Elementor\Icons_Manager;
-use Elementor\Repeater;
-use Elementor\Widget_Base;
 
 if (! defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
@@ -743,7 +740,7 @@ class Slider extends Widget_Base
 		$this->add_responsive_control(
 			'aes_slider_width',
 			[
-				'label' => esc_html__('Width', 'aes_slider'),
+				'label' => esc_html__('Slider Width', 'aes_slider'),
 				'type' => Controls_Manager::SLIDER,
 				'range' => [
 					'px' => [
@@ -784,7 +781,7 @@ class Slider extends Widget_Base
 		$this->add_responsive_control(
 			'aes_slider_height',
 			[
-				'label' => esc_html__('Height', 'aes_slider'),
+				'label' => esc_html__('Slider Height', 'aes_slider'),
 				'type' => Controls_Manager::SLIDER,
 				'range' => [
 					'px' => [
@@ -835,7 +832,7 @@ class Slider extends Widget_Base
 		$this->add_responsive_control(
 			'aspect_ratio',
 			[
-				'label' => esc_html__('Width', 'aes_slider'),
+				'label' => esc_html__('Ratio', 'aes_slider'),
 				'type' => Controls_Manager::TEXT,
 				'default' => '16/9',
 				'selectors' => [
@@ -935,7 +932,7 @@ class Slider extends Widget_Base
 								<div class="aes-slide-contents">
 									<div class="aes-slide-title">Slide 1 Heading</div>
 									<div class="aes-slide-description">Lorem ipsum dolor sit amet consectetur adipiscing elit dolor</div>
-									<a href="http://www.google.com" class="elementor-button aes-slide-button">Click Here</a>
+									<a href="http://www.google.com" class="aes-slide-button">Click Here</a>
 								</div>
 							</div>
 						</div>
