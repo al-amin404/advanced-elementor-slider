@@ -6,9 +6,11 @@ use Elementor\Widget_Base;
 use Elementor\Icons_Manager;
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Background;
-use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Text_Shadow;
-
+use Elementor\Group_Control_Typography;
+use Elementor\Icons_Manager;
+use Elementor\Repeater;
+use Elementor\Widget_Base;
 
 if (! defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
@@ -109,13 +111,13 @@ class Slider extends Widget_Base
 				'selectors' => [
 					'{{WRAPPER}} {{CURRENT_ITEM}} .aes-slide-bg' => 'background-image: url({{URL}})',
 				],
-				'dynamic' => [
-					'active' => true,
+				'default' => [
+					'url' => '',
 				],
 			]
 		);
 
-		$repeater->add_control(
+		$repeater->add_responsive_control(
 			'slide_bg_size',
 			[
 				'label' => _x('Background size', 'Background Control', 'aes_slider'),
@@ -309,7 +311,7 @@ class Slider extends Widget_Base
 		//inner content positon - TAB_CONTENT
 		
 			//horizontal position - CHOOSE control
-			$repeater->add_control(
+			$repeater->add_responsive_control(
 				'slide_horizontal_position',
 				[
 					'label'=> esc_html__('Horizontal Position', 'aes_slider'),
@@ -348,7 +350,7 @@ class Slider extends Widget_Base
 			);
 
 			//vertical position - CHOOSE control
-			$repeater->add_control(
+			$repeater->add_responsive_control(
 				'slide_vertical_position',
 				[
 					'label'=> esc_html__('Vertical Position', 'aes_slider'),
@@ -387,7 +389,7 @@ class Slider extends Widget_Base
 			);
 
 			//text align - CHOOSE control
-			$repeater->add_control(
+			$repeater->add_responsive_control(
 			'slide_text_align',
 			[
 					'label' => esc_html__( 'Align Text', 'aes_slider' ),
@@ -488,7 +490,7 @@ class Slider extends Widget_Base
 		);
 
 		//inner content padding - DIMENSIONS control
-		$repeater->add_control(
+		$repeater->add_responsive_control(
 			'slide_content_padding',
 			[
 				'label' => esc_html__( 'Padding', 'aes_slider' ),
@@ -569,7 +571,7 @@ class Slider extends Widget_Base
 		);
 
 		//border width - DIMENSIONS control
-		$repeater->add_control(
+		$repeater->add_responsive_control(
 			'slide_border_width',
 			[
 				'label' => esc_html__('Border Width', 'aes_slider'),
@@ -604,7 +606,7 @@ class Slider extends Widget_Base
 		);
 			
 		//inner content border radius - DIMENSIONS control
-		$repeater->add_control(
+		$repeater->add_responsive_control(
 			'slide_border_radius',
 			[
 				'label' => esc_html__('Border Radius', 'aes_slider'),
@@ -680,16 +682,23 @@ class Slider extends Widget_Base
 				'fields'      => $repeater->get_controls(),
 				'default'     => [
 					[
-						'aes_slide_title'      => esc_html__('Jane Doe', 'aes_slider'),
-						'aes_slide_description'       => esc_html__('CEO, Acme Inc.', 'aes_slider'),
-						'aes_slide_button_txt' => esc_html__('Learn More', 'aes_slider'),
+						'aes_slide_title'      => esc_html__('Slide 1 Title', 'aes_slider'),
+						'aes_slide_description'       => esc_html__('Lorem ipsum dolor sit amet consectetur adipiscing elit dolor', 'aes_slider'),
+						'aes_slide_button_txt' => esc_html__('Click Here', 'aes_slider'),
 						'aes_slide_bg_color' => '#888888',
+						'aes_slide_bg_image' => [
+							'url' => '',
+						],
+						
 					],
 					[
-						'aes_slide_title'      => esc_html__('Jhon Doe', 'aes_slider'),
-						'aes_slide_description'       => esc_html__('CEO, Acme Inc.', 'aes_slider'),
-						'aes_slide_button_txt' => esc_html__('Learn More', 'aes_slider'),
-						'aes_slide_bg_color' => '#888888',
+						'aes_slide_title'      => esc_html__('Slide 2 Title', 'aes_slider'),
+						'aes_slide_description'       => esc_html__('Lorem ipsum dolor sit amet consectetur adipiscing elit dolor', 'aes_slider'),
+						'aes_slide_button_txt' => esc_html__('Click Here', 'aes_slider'),
+						'aes_slide_bg_color' => '#4054b2',
+						'aes_slide_bg_image' => [
+							'url' => '',
+						],
 					]
 				],
 				'title_field' => '{{{ aes_slide_title }}}'
@@ -698,7 +707,7 @@ class Slider extends Widget_Base
 
 
 		//slide content max-width
-		$this->add_control(
+		$this->add_responsive_control(
 			'aes_slide_content_max_width',
 			[
 				'label' => esc_html__('Content Max Width', 'aes_slider'),
@@ -729,6 +738,88 @@ class Slider extends Widget_Base
 				],
 			]
 		);
+
+		//slider width
+		$this->add_responsive_control(
+			'aes_slider_width',
+			[
+				'label' => esc_html__('Width', 'aes_slider'),
+				'type' => Controls_Manager::SLIDER,
+				'range' => [
+					'px' => [
+						'min' => 0,
+						'max' => 2100,
+					],
+					'%' => [
+						'min' => 0,
+						'max' => 100,
+					],
+				],
+				'size_units' => [ '%', 'px' ],
+				'default' => [
+					'size' => '800',
+					'unit' => 'px',
+				],
+				'tablet_default' => [
+					'unit' => 'px',
+				],
+				'mobile_default' => [
+					'unit' => 'px',
+				],
+				'selectors' => [
+					'{{WRAPPER}} .aes-slider-container' => 'width: {{SIZE}}{{UNIT}};',
+				],
+				'conditions' => [
+					'terms' => [
+						[
+							'name' => 'slider_aspect_ratio',
+							'value' => '',
+						],
+					],
+				],
+			]
+		);
+		
+		//slider height
+		$this->add_responsive_control(
+			'aes_slider_height',
+			[
+				'label' => esc_html__('Height', 'aes_slider'),
+				'type' => Controls_Manager::SLIDER,
+				'range' => [
+					'px' => [
+						'min' => 0,
+						'max' => 1800,
+					],
+					'%' => [
+						'min' => 0,
+						'max' => 100,
+					],
+				],
+				'size_units' => [ '%', 'px' ],
+				'default' => [
+					'size' => '450',
+					'unit' => 'px',
+				],
+				'tablet_default' => [
+					'unit' => 'px',
+				],
+				'mobile_default' => [
+					'unit' => 'px',
+				],
+				'selectors' => [
+					'{{WRAPPER}} .aes-slider-container' => 'height: {{SIZE}}{{UNIT}};',
+				],
+				'conditions' => [
+					'terms' => [
+						[
+							'name' => 'slider_aspect_ratio',
+							'value' => '',
+						],
+					],
+				],
+			]
+		);
 		
 		//slider aspect ratio - switcher control
 		$this->add_control(
@@ -741,9 +832,43 @@ class Slider extends Widget_Base
 		);
 
 		//ratio width - text input control
-		//ratio height - text input control
-		
+		$this->add_responsive_control(
+			'aspect_ratio',
+			[
+				'label' => esc_html__('Width', 'aes_slider'),
+				'type' => Controls_Manager::TEXT,
+				'default' => '16/9',
+				'selectors' => [
+					'{{WRAPPER}} .aes-slider-container' => 'aspect-ratio: {{VALUE}}',
+				],
+				'conditions' => [
+					'terms' => [
+						[
+							'name' => 'slider_aspect_ratio',
+							'value' => 'yes',
+						],
+					],
+				],
+			]
+		);
 
+		//ratio height - text input control
+		// $this->add_responsive_control(
+		// 	'aspect_ratio_height',
+		// 	[
+		// 		'label' => esc_html__('Height', 'aes_slider'),
+		// 		'type' => Controls_Manager::TEXT,
+		// 		'default' => 9,
+		// 		'conditions' => [
+		// 			'terms' => [
+		// 				[
+		// 					'name' => 'slider_aspect_ratio',
+		// 					'value' => 'yes',
+		// 				],
+		// 			],
+		// 		],
+		// 	]
+		// );
 		
 
 		$this->end_controls_section();
@@ -759,7 +884,7 @@ class Slider extends Widget_Base
 			]
 		);
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'slide_per_view',
 			[
 				'label' => esc_html__('Slide Per View', 'textdomain'),
@@ -794,8 +919,12 @@ class Slider extends Widget_Base
 	{
 		$settings = $this->get_settings_for_display();
 ?>
-		<?php if ($settings['aes_slides']): ?>
-			<div class="swiper aes-slider-container">
+		<?php if ($settings['aes_slides']): 
+		// echo '<pre>';
+		// print_r($settings);
+		// echo '</pre>';
+			?>
+			<div class="swiper aes-slider-container" >
 				<div class="swiper-wrapper aes-slides">
 					<?php foreach ($settings['aes_slides'] as $slide):
 					?>
