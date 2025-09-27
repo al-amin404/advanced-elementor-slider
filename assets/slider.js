@@ -21,7 +21,7 @@ jQuery( document ).ready( function ( $ ) {
 			};
 			if(this.getElementSettings( 'autoplay' ) == 'yes') {
 				settings.autoplay = {
-					delay: 1200,
+					delay: this.getElementSettings( 'slide_delay' ),
 					disableOnInteraction: false,
 				}
 			}
