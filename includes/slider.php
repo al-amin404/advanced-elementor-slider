@@ -4,7 +4,9 @@ use Elementor\Utils;
 use Elementor\Repeater;
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
+use Elementor\Core\Kits\Documents\Tabs\Global_Typography;
 use Elementor\Group_Control_Background;
+use Elementor\Group_Control_Box_Shadow;
 use Elementor\Group_Control_Text_Shadow;
 use Elementor\Group_Control_Typography;
 use Elementor\Icons_Manager;
@@ -316,15 +318,15 @@ class Slider extends Widget_Base
 					'options' => [
 						'left' => [
 							'title'=> esc_html__('Left','aes_slider'),
-							'icon'=> 'eicon-text-align-left',
+							'icon'=> 'eicon-h-align-left',
 						],
 						'center' => [
 							'title' => esc_html__( 'Center', 'aes_slider' ),
-							'icon' => 'eicon-text-align-center',
+							'icon' => 'eicon-h-align-center',
 						],
 						'right' => [
 							'title' => esc_html__( 'Right', 'aes_slider' ),
-							'icon' => 'eicon-text-align-right',
+							'icon' => 'eicon-h-align-right',
 						],
 					],
 					'selectors' => [
@@ -353,17 +355,17 @@ class Slider extends Widget_Base
 					'label'=> esc_html__('Vertical Position', 'aes_slider'),
 					'type'=> Controls_Manager::CHOOSE,
 					'options' => [
-						'left' => [
-							'title'=> esc_html__('Left','aes_slider'),
-							'icon'=> 'eicon-text-align-left',
+						'top' => [
+							'title'=> esc_html__('Top','aes_slider'),
+							'icon'=> 'eicon-v-align-top',
 						],
 						'center' => [
 							'title' => esc_html__( 'Center', 'aes_slider' ),
-							'icon' => 'eicon-text-align-center',
+							'icon' => 'eicon-v-align-middle',
 						],
-						'right' => [
-							'title' => esc_html__( 'Right', 'aes_slider' ),
-							'icon' => 'eicon-text-align-right',
+						'bottom' => [
+							'title' => esc_html__( 'Bottom', 'aes_slider' ),
+							'icon' => 'eicon-v-align-bottom',
 						],
 					],
 					'selectors' => [
@@ -371,7 +373,7 @@ class Slider extends Widget_Base
 					],
 					'selectors_dictionary' => [
 						'top' => 'flex-start',
-						'middle' => 'center',
+						'center' => 'center',
 						'bottom' => 'flex-end',
 					],
 					'conditions' => [
@@ -426,7 +428,6 @@ class Slider extends Widget_Base
 			[
 				'label' => esc_html__('Title Color', 'aes_slider'),
 				'type' => Controls_Manager::COLOR,
-				'default' => '#000',
 				'selectors' => [
 					'{{WRAPPER}} {{CURRENT_ITEM}} .aes-slide-title' => 'color: {{VALUE}}',
 				],
@@ -447,7 +448,6 @@ class Slider extends Widget_Base
 			[
 				'label' => esc_html__('Description Color', 'aes_slider'),
 				'type' => Controls_Manager::COLOR,
-				'default' => '#000',
 				'selectors' => [
 					'{{WRAPPER}} {{CURRENT_ITEM}} .aes-slide-description' => 'color: {{VALUE}}',
 				],
@@ -702,40 +702,6 @@ class Slider extends Widget_Base
 			]
 		);
 
-
-		//slide content max-width
-		$this->add_responsive_control(
-			'aes_slide_content_max_width',
-			[
-				'label' => esc_html__('Content Max Width', 'aes_slider'),
-				'type' => Controls_Manager::SLIDER,
-				'range' => [
-					'px' => [
-						'min' => 0,
-						'max' => 1000,
-					],
-					'%' => [
-						'min' => 0,
-						'max' => 100,
-					],
-				],
-				'size_units' => [ '%', 'px' ],
-				'default' => [
-					'size' => '66',
-					'unit' => '%',
-				],
-				'tablet_default' => [
-					'unit' => '%',
-				],
-				'mobile_default' => [
-					'unit' => '%',
-				],
-				'selectors' => [
-					'{{WRAPPER}} .aes-slide-contents' => 'max-width: {{SIZE}}{{UNIT}};',
-				],
-			]
-		);
-
 		//slider width
 		$this->add_responsive_control(
 			'aes_slider_width',
@@ -751,8 +717,12 @@ class Slider extends Widget_Base
 						'min' => 0,
 						'max' => 100,
 					],
+					'vw' => [
+						'min' => 0,
+						'max' => 100,
+					],
 				],
-				'size_units' => [ '%', 'px' ],
+				'size_units' => [ '%', 'px', 'vw' ],
 				'default' => [
 					'size' => '800',
 					'unit' => 'px',
@@ -792,8 +762,12 @@ class Slider extends Widget_Base
 						'min' => 0,
 						'max' => 100,
 					],
+					'vh' => [
+						'min' => 0,
+						'max' => 100,
+					],
 				],
-				'size_units' => [ '%', 'px' ],
+				'size_units' => [ '%', 'px', 'vh' ],
 				'default' => [
 					'size' => '450',
 					'unit' => 'px',
@@ -849,25 +823,6 @@ class Slider extends Widget_Base
 			]
 		);
 
-		//ratio height - text input control
-		// $this->add_responsive_control(
-		// 	'aspect_ratio_height',
-		// 	[
-		// 		'label' => esc_html__('Height', 'aes_slider'),
-		// 		'type' => Controls_Manager::TEXT,
-		// 		'default' => 9,
-		// 		'conditions' => [
-		// 			'terms' => [
-		// 				[
-		// 					'name' => 'slider_aspect_ratio',
-		// 					'value' => 'yes',
-		// 				],
-		// 			],
-		// 		],
-		// 	]
-		// );
-		
-
 		$this->end_controls_section();
 		//content section end
 
@@ -897,19 +852,628 @@ class Slider extends Widget_Base
 		$this->add_control(
 			'autoplay',
 			[
-				'label' => esc_html__('Auto Play', 'textdomain'),
+				'label' => esc_html__('Auto Play', 'aes_slider'),
 				'type' => Controls_Manager::SWITCHER,
-				'label_on' => esc_html__('Yes', 'textdomain'),
-				'label_off' => esc_html__('No', 'textdomain'),
+				'label_on' => esc_html__('Yes', 'aes_slider'),
+				'label_off' => esc_html__('No', 'aes_slider'),
 				'return_value' => 'yes',
 				'default' => 'yes',
 				'frontend_available' => true,
 			]
 		);
 
+		$this->add_control(
+			'slide_delay',
+			[
+				'label' => esc_html__('Delay', 'aes_slider'),
+				'type' => Controls_Manager::NUMBER,
+				'default' => 1200,
+				'frontend_available' => true,
+				'conditions' => [
+					'terms' => [
+						[
+							'name' => 'autoplay',
+							'value' => 'yes',
+						],
+					],
+				],
+			]
+		);
+
+		$this->add_control(
+			'slider_navigation',
+			[
+				'label' => esc_html__('Navigation Arrow', 'aes_slider'),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => esc_html__('Yes', 'aes_slider'),
+				'label_off' => esc_html__('No', 'aes_slider'),
+				'return_value' => 'yes',
+				'default' => 'yes',
+				'frontend_available' => true,
+			]
+		);
+
+		$this->add_control(
+			'navigation_color',
+			[
+				'label' => esc_html__('Navigation Color', 'aes_slider'),
+				'type' => Controls_Manager::COLOR,
+				'default' => '#fff',
+				'selectors' => [
+					'{{WRAPPER}} .swiper-button-next' => 'color: {{VALUE}}',
+					'{{WRAPPER}} .swiper-button-prev' => 'color: {{VALUE}}',
+				],
+				'conditions' => [
+					'terms' => [
+						[
+							'name' => 'slider_navigation',
+							'value' => 'yes',
+						],
+					],
+				],
+			]
+		);
+
+		$this->add_control(
+			'slider_pagination',
+			[
+				'label' => esc_html__('Pagination', 'aes_slider'),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => esc_html__('Yes', 'aes_slider'),
+				'label_off' => esc_html__('No', 'aes_slider'),
+				'return_value' => 'yes',
+				'default' => 'yes',
+				'frontend_available' => true,
+			]
+		);
+
+		$this->add_control(
+			'pagination_color',
+			[
+				'label' => esc_html__('Pagination Color', 'aes_slider'),
+				'type' => Controls_Manager::COLOR,
+				'default' => '#fff',
+				'selectors' => [
+					'{{WRAPPER}} .swiper-pagination-bullet' => 'background-color: {{VALUE}}',
+				],
+				'conditions' => [
+					'terms' => [
+						[
+							'name' => 'slider_pagination',
+							'value' => 'yes',
+						],
+					],
+				],
+			]
+		);
+
 		$this->end_controls_section();
 		//slider settings section end
 
+
+		
+		//start content style section
+		$this->start_controls_section(
+			'section_style_content_box',
+			[
+				'label' => esc_html__( 'Content', 'aes_slider' ),
+				'tab' => Controls_Manager::TAB_STYLE,
+			]
+		);
+
+		//slide content max-width
+		$this->add_responsive_control(
+			'aes_slide_content_max_width',
+			[
+				'label' => esc_html__('Content Max Width', 'aes_slider'),
+				'type' => Controls_Manager::SLIDER,
+				'range' => [
+					'px' => [
+						'min' => 0,
+						'max' => 1000,
+					],
+					'vw' => [
+						'min' => 0,
+						'max' => 100,
+					],
+					'%' => [
+						'min' => 0,
+						'max' => 100,
+					],
+				],
+				'size_units' => [ '%', 'px', 'rem', 'vw' ],
+				'default' => [
+					'size' => '66',
+					'unit' => '%',
+				],
+				'tablet_default' => [
+					'unit' => '%',
+				],
+				'mobile_default' => [
+					'unit' => '%',
+				],
+				'selectors' => [
+					'{{WRAPPER}} .aes-slide-contents' => 'max-width: {{SIZE}}{{UNIT}};',
+				],
+			]
+		);
+
+		$this->add_control(
+			'slider_content_bg_color',
+			[
+				'label' => esc_html__('Content Background', 'aes_slider'),
+				'type' => Controls_Manager::COLOR,
+				'default' => '#00000099',
+				'selectors' => [
+					'{{WRAPPER}} .aes-slide-contents' => 'background-color: {{VALUE}}',
+				],
+			]
+		);
+
+		//inner content padding - DIMENSIONS control
+		$this->add_responsive_control(
+			'slider_content_padding',
+			[
+				'label' => esc_html__( 'Padding', 'aes_slider' ),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', '%', 'em', 'rem' ],
+				'default' => [
+					'unit' => 'px',
+					'isLinked' => true,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .aes-slide-contents' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		//inner content border type - SELECT control
+		$this->add_control(
+			'slider_content_border_type',
+			[
+				'label' => esc_html__('Border Type', 'aes_slider'),
+				'type' => Controls_Manager::SELECT,
+				'options' => [
+					'' => esc_html__('None', 'aes_slider'),
+					'solid' => 'Solid',
+					'dashed' => 'Dashed',
+					'dotted' => 'Dotted',
+					'double' => 'Double',
+					'grove' => 'Grove',
+					'inset' => 'Inset'
+				],
+				'default' => '',
+				'selectors' => [
+					'{{WRAPPER}} .aes-slide-contents' => 'border-style: {{VALUE}};',
+				],
+			]
+		);
+
+		//border color - COLOR control
+		$this->add_control(
+			'slider_content_border_color',
+			[
+				'label' => esc_html__('Border Color', 'aes_slider'),
+				'type' => Controls_Manager::COLOR,
+				'default' => '#fff',
+				'selectors' => [
+					'{{WRAPPER}} .aes-slide-contents' => 'border-color: {{VALUE}}',
+				],
+				'conditions' => [
+					'terms' => [
+						[
+							'name' => 'slider_content_border_type',
+							'operator' => '!=',
+							'value' => '',
+						],
+					],
+				],
+			]
+		);
+
+		//border width - DIMENSIONS control
+		$this->add_responsive_control(
+			'slider_border_width',
+			[
+				'label' => esc_html__('Border Width', 'aes_slider'),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', 'em', 'rem' ],
+				'default' => [
+					'top' => 1,
+					'right' => 1,
+					'bottom' => 1,
+					'left' => 1,
+					'unit' => 'px',
+					'isLinked' => true,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .aes-slide-contents' => 'border-width: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+				'conditions' => [
+					'terms' => [
+						[
+							'name' => 'slider_content_border_type',
+							'operator' => '!=',
+							'value' => '',
+						],
+					],
+				],
+				]
+		);
+			
+		//inner content border radius - DIMENSIONS control
+		$this->add_responsive_control(
+			'slider_border_radius',
+			[
+				'label' => esc_html__('Border Radius', 'aes_slider'),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', 'em', 'rem', '%' ],
+				'default' => [
+					'isLinked' => true,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .aes-slide-contents' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		//backdrop blur - SLIDER control
+		$this->add_control(
+			'slider_content_backdrop_filter',
+			[
+				'label' => esc_html__('Backdrop Blur', 'aes_slider'),
+				'type' => Controls_Manager::SLIDER,
+				'range' => [
+					'px' => [
+						'min' => 0,
+						'max' => 100,
+					],
+					'%' => [
+						'min' => 0,
+						'max' => 100,
+					],
+				],
+				'size_units' => [ '%', 'px' ],
+				'selectors' => [
+					'{{WRAPPER}} .aes-slide-contents' => 'backdrop-filter: blur({{SIZE}}{{UNIT}});',
+				],
+			]
+		);
+
+
+		$this->end_controls_section();
+		//end content style section
+		
+		
+		
+		
+		//start Title style section
+		$this->start_controls_section(
+			'section_style_title',
+			[
+				'label' => esc_html__( 'Title', 'aes_slider' ),
+				'tab' => Controls_Manager::TAB_STYLE,
+			]
+		);
+
+		//slides Title style
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name' => 'title_typography',
+				'label' => esc_html__('Typography', 'aes_slider'),
+				'global' => [
+					'default' => Global_Typography::TYPOGRAPHY_PRIMARY,
+				],
+				'selector' => '{{WRAPPER}} .aes-slide-title',
+			]
+		);
+
+		$this->add_control(
+			'title_color',
+			[
+				'label' => esc_html__( 'Color', 'aes_slider' ),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .aes-slide-title' => 'color: {{VALUE}}',
+
+				],
+			]
+		);
+
+		$this->add_control(
+			'title_spacing',
+			[
+				'label' => esc_html__( 'Gap', 'aes_slider' ),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => [ 'px', 'em', 'rem', 'custom' ],
+				'range' => [
+					'px' => [
+						'max' => 100,
+					],
+					'em' => [
+						'max' => 10,
+					],
+					'rem' => [
+						'max' => 10,
+					],
+				],
+				'selectors' => [
+					'{{WRAPPER}} .aes-slide-inner .aes-slide-contents .aes-slide-title:not(:last-child)' => 'margin-bottom: {{SIZE}}{{UNIT}}',
+				],
+			]
+		);
+
+		$this-> end_controls_section();
+		//end Title style section
+
+
+		//start Description style section
+		$this->start_controls_section(
+			'section_style_description',
+			[
+				'label' => esc_html__( 'Description', 'aes_slider' ),
+				'tab' => Controls_Manager::TAB_STYLE,
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name' => 'description_typography',
+				'label' => esc_html__('Typography', 'aes_slider'),
+				'global' => [
+					'default' => Global_Typography::TYPOGRAPHY_PRIMARY,
+				],
+				'selector' => '{{WRAPPER}} .aes-slide-description',
+			]
+		);
+
+		$this->add_control(
+			'description_color',
+			[
+				'label' => esc_html__( 'Color', 'aes_slider' ),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .aes-slide-description' => 'color: {{VALUE}}',
+
+				],
+			]
+		);
+
+		$this->add_control(
+			'description_spacing',
+			[
+				'label' => esc_html__( 'Gap', 'aes_slider' ),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => [ 'px', 'em', 'rem', 'custom' ],
+				'range' => [
+					'px' => [
+						'max' => 100,
+					],
+					'em' => [
+						'max' => 10,
+					],
+					'rem' => [
+						'max' => 10,
+					],
+				],
+				'selectors' => [
+					'{{WRAPPER}} .aes-slide-inner .aes-slide-contents .aes-slide-description:not(:last-child)' => 'margin-bottom: {{SIZE}}{{UNIT}}',
+				],
+			]
+		);
+
+		$this-> end_controls_section();
+		//end Description style section
+
+
+		//start Button style section
+		$this->start_controls_section(
+			'section_style_button',
+			[
+				'label' => esc_html__( 'Button', 'aes_slider' ),
+				'tab' => Controls_Manager::TAB_STYLE,
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name' => 'button_typography',
+				'label' => esc_html__('Typography', 'aes_slider'),
+				'global' => [
+					'default' => Global_Typography::TYPOGRAPHY_PRIMARY,
+				],
+				'selector' => '{{WRAPPER}} .aes-slide-button',
+			]
+		);
+
+		$this->add_control(
+			'button_border_width',
+			[
+				'label' => esc_html__( 'Border Width', 'aes_slider' ),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => [ 'px', '%', 'em', 'rem', 'vw', 'custom' ],
+				'range' => [
+					'px' => [
+						'max' => 20,
+					],
+					'em' => [
+						'max' => 2,
+					],
+					'rem' => [
+						'max' => 2,
+					],
+				],
+				'selectors' => [
+					'{{WRAPPER}} .aes-slide-button' => 'border-width: {{SIZE}}{{UNIT}};',
+				],
+			]
+		);
+
+		$this->add_control(
+			'button_border_radius',
+			[
+				'label' => esc_html__( 'Border Radius', 'aes_slider' ),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => [ 'px', '%', 'em', 'rem', 'custom' ],
+				'range' => [
+					'px' => [
+						'max' => 100,
+					],
+					'em' => [
+						'max' => 10,
+					],
+					'rem' => [
+						'max' => 10,
+					],
+				],
+				'selectors' => [
+					'{{WRAPPER}} .aes-slide-button' => 'border-radius: {{SIZE}}{{UNIT}};',
+				],
+			]
+		);
+
+		//button content padding - DIMENSIONS control
+		$this->add_responsive_control(
+			'slider_button_padding',
+			[
+				'label' => esc_html__( 'Padding', 'aes_slider' ),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', '%', 'em', 'rem' ],
+				'default' => [
+					'unit' => 'px',
+					'isLinked' => true,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .aes-slide-button' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Box_Shadow::get_type(),
+			[
+				'name' => 'box_shadow',
+				'selector' => '{{WRAPPER}} .aes-slide-button',
+			]
+		);
+
+		$this->start_controls_tabs( 'slide_button_tabs' );
+
+		$this->start_controls_tab(
+			'normal',
+			[
+				'label' => esc_html__( 'Normal', 'aes_slider' ),
+			]
+		);
+
+		$this->add_control(
+			'button_text_color',
+			[
+				'label' => esc_html__( 'Text Color', 'aes_slider' ),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .aes-slide-button' => 'color: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Background::get_type(),
+			[
+				'name' => 'button_background',
+				'types' => [ 'classic', 'gradient' ],
+				'exclude' => [ 'image' ],
+				'selector' => '{{WRAPPER}} .aes-slide-button',
+				'fields_options' => [
+					'background' => [
+						'default' => 'classic',
+					],
+				],
+			]
+		);
+
+		$this->add_control(
+			'button_border_color',
+			[
+				'label' => esc_html__( 'Border Color', 'aes_slider' ),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .aes-slide-button' => 'border-color: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->end_controls_tab();
+
+		$this->start_controls_tab(
+			'hover',
+			[
+				'label' => esc_html__( 'Hover', 'aes_slider' ),
+			]
+		);
+
+		$this->add_control(
+			'button_hover_text_color',
+			[
+				'label' => esc_html__( 'Text Color', 'aes_slider' ),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .aes-slide-button:hover' => 'color: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Background::get_type(),
+			[
+				'name' => 'button_hover_background',
+				'types' => [ 'classic', 'gradient' ],
+				'exclude' => [ 'image' ],
+				'selector' => '{{WRAPPER}} .aes-slide-button:hover',
+				'fields_options' => [
+					'background' => [
+						'default' => 'classic',
+					],
+				],
+			]
+		);
+
+		$this->add_control(
+			'button_hover_border_color',
+			[
+				'label' => esc_html__( 'Border Color', 'aes_slider' ),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .aes-slide-button:hover' => 'border-color: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_control(
+			'button_hover_transition_duration',
+			[
+				'label' => esc_html__( 'Transition Duration', 'aes_slider' ),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => [ 's', 'ms', 'custom' ],
+				'default' => [
+					'unit' => 'ms',
+				],
+				'selectors' => [
+					'{{WRAPPER}} .aes-slide-button' => 'transition-duration: {{SIZE}}{{UNIT}};',
+				],
+			]
+		);
+
+		$this->end_controls_tab();
+
+		$this->end_controls_tabs();
+
+
+		$this->end_controls_section();
+		//end Button style section
 	}
 
 	protected function render()
@@ -927,24 +1491,38 @@ class Slider extends Widget_Base
 					?>
 						<div class="elementor-repeater-item-<?= $slide['_id'] ?> swiper-slide">
 							<div class="aes-slide-bg" role="img"></div>
-							<div class="aes-slide-bg-overlay"></div>
+							<?php if($slide['slide_bg_overlay'] === 'yes') { ?>
+								<div class="aes-slide-bg-overlay"></div>
+							<?php } ?>
 							<div class="aes-slide-inner">
-								<div class="aes-slide-contents">
-									<div class="aes-slide-title">Slide 1 Heading</div>
-									<div class="aes-slide-description">Lorem ipsum dolor sit amet consectetur adipiscing elit dolor</div>
-									<a href="http://www.google.com" class="aes-slide-button">Click Here</a>
-								</div>
+								<?php if(!empty($slide['aes_slide_title']) || !empty($slide['aes_slide_description']) || !empty($slide['aes_slide_button_txt'])) { ?>
+									<div class="aes-slide-contents">
+										<?php if(!empty($slide['aes_slide_title'])) { ?>
+											<div class="aes-slide-title"><?= $slide['aes_slide_title'] ?></div>
+										<?php } ?>
+										<?php if(!empty($slide['aes_slide_description'])) { ?>
+											<div class="aes-slide-description"><?= $slide['aes_slide_description'] ?></div>
+										<?php } ?>
+										<?php if(!empty($slide['aes_slide_button_txt'])) { ?>
+											<a href="<?php $this->print_render_attribute_string( 'aes_slide_button_url' ); ?>" class="aes-slide-button"><?= $slide['aes_slide_button_txt'] ?></a>
+										<?php } ?>
+									</div>
+								<?php } ?>
 							</div>
 						</div>
 					<?php endforeach; ?>
 				</div>
 
 				<!-- Pagination -->
-				<div class="swiper-pagination"></div>
+				<?php if($settings['slider_pagination'] === 'yes') { ?>
+					<div class="swiper-pagination"></div>
+				<?php } ?>
 
 				<!-- Navigation -->
-				<div class="swiper-button-next"></div>
-				<div class="swiper-button-prev"></div>
+				<?php if($settings['slider_navigation'] === 'yes') { ?>
+					<div class="swiper-button-next"></div>
+					<div class="swiper-button-prev"></div>
+				<?php } ?>
 			</div>
 		<?php endif; ?>
 <?php
